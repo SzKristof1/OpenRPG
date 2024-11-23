@@ -3,7 +3,7 @@ import json
 from hugchat import hugchat
 from hugchat.login import Login
 
-ASSISTANT_ID = "assistant id comes here"
+ASSISTANT_ID = "673e2ad08a404f54ccb3a5e8"
 
 #load sign in cookies from file
 def load_cookies_from_file(cookie_file):
