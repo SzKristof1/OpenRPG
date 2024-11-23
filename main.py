@@ -3,7 +3,7 @@ import json
 from hugchat import hugchat
 from hugchat.login import Login
 
-ASSISTANT_ID = "673e2ad08a404f54ccb3a5e8"
+ASSISTANT_ID = "6741ea05b96dc97d6d15b237"
 
 def list_cookie_files(cookie_dir):
     # list available cookie files
