@@ -5,30 +5,62 @@ from hugchat.login import Login
 
 ASSISTANT_ID = "673e2ad08a404f54ccb3a5e8"
 
-#load sign in cookies from file
-def load_cookies_from_file(cookie_file):
+def list_cookie_files(cookie_dir):
+    # list available cookie files
+    if os.path.exists(cookie_dir):
+        return [f for f in os.listdir(cookie_dir) if f.endswith('.json')]
+    return []
+
+def load_cookie_file(cookie_dir, file_name):
+    # load the selected cookie file
     try:
-        with open(cookie_file, 'r') as f:
+        with open(os.path.join(cookie_dir, file_name), 'r') as f:
             cookies = json.load(f)
         return cookies
-    except (FileNotFoundError, json.JSONDecodeError):
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading cookie file {file_name}: {e}")
         return None
 
-# log in and initialize
-def initialize_chatbot(email=None, password=None, cookie_file='cookies.json'):
-    # check if the cookies.json file exists in the current directory
-    cookies = load_cookies_from_file(cookie_file)
-    if cookies:
-        print("Loaded cookies from cookies.json")
-        chatbot = hugchat.ChatBot(cookies=cookies)
-        return chatbot
-    elif email and password:
-        print("Logging in with email and password...")
+
+def initialize_chatbot(email=None, password=None, cookie_dir='cookies'):
+    # initialize by logging in using cookies or email&password
+    # List available cookies
+    cookie_files = list_cookie_files(cookie_dir)
+
+    if cookie_files:
+        print("Available cookie files:")
+        for idx, file in enumerate(cookie_files, start=1):
+            print(f"{idx}. {file}")
+
+        while True:
+            choice = input(f"Select a cookie file (1-{len(cookie_files)}) or press Enter to skip: ").strip()
+            if not choice:
+                print("Skipping cookie selection. Proceeding to email-password login...")
+                break
+
+            if choice.isdigit():
+                selected_idx = int(choice) - 1
+                if 0 <= selected_idx < len(cookie_files):
+                    selected_file = cookie_files[selected_idx]
+                    cookies = load_cookie_file(cookie_dir, selected_file)
+                    if cookies:
+                        print(f"Loaded cookies from {selected_file}")
+                        return hugchat.ChatBot(cookies=cookies)
+                else:
+                    print(f"Invalid choice. Please select a number between 1 and {len(cookie_files)}.")
+            else:
+                print("Invalid input. Please enter a valid number.")
+
+    # Prompt for email and password if skipping or no valid cookies
+    if not email or not password:
+        email = input("Enter your HuggingChat email: ").strip()
+        password = input("Enter your HuggingChat password: ").strip()
+
+    if email and password:
         try:
             login = Login(email, password)
-            cookies = login.login(cookie_dir_path='./cookies/', save_cookies=True)
-            chatbot = hugchat.ChatBot(cookies=cookies.get_dict())
-            return chatbot
+            cookies = login.login(cookie_dir_path=cookie_dir, save_cookies=True)
+            return hugchat.ChatBot(cookies=cookies.get_dict())
         except Exception as e:
             print(f"Error logging in: {str(e)}")
             exit()
@@ -62,33 +94,21 @@ def start_game(chatbot):
 
         # check if chatbot says game over
         if "Game Over" in chatbot_response:
-            print("""  /$$$$$$                                           /$$$$$$                                /$$
-                      /$$__  $$                                         /$$__  $$                              | $$
-                     | $$  \__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$       | $$  \ $$ /$$    /$$ /$$$$$$   /$$$$$$ | $$
-                     | $$ /$$$$ |____  $$| $$_  $$_  $$ /$$__  $$      | $$  | $$|  $$  /$$//$$__  $$ /$$__  $$| $$
-                     | $$|_  $$  /$$$$$$$| $$ \ $$ \ $$| $$$$$$$$      | $$  | $$ \  $$/$$/| $$$$$$$$| $$  \__/|__/
-                     | $$  \ $$ /$$__  $$| $$ | $$ | $$| $$_____/      | $$  | $$  \  $$$/ | $$_____/| $$          
-                     |  $$$$$$/|  $$$$$$$| $$ | $$ | $$|  $$$$$$$      |  $$$$$$/   \  $/  |  $$$$$$$| $$       /$$
-                      \______/  \_______/|__/ |__/ |__/ \_______/       \______/     \_/    \_______/|__/      |__/ """)
+            print("Game Over!")
             print("Exiting OpenRPG...")
             break
 
-# main function
+
 def main():
-    cookie_file = 'cookies.json'
-    saved_account = '/cookies/*.json'
-    if os.path.exists(cookie_file):
-        # attempt to use cookies for login
-        chatbot = initialize_chatbot(cookie_file=cookie_file)
-    elif os.path.exists(saved_account):
-        # attempt to use cookies for login
-        chatbot = initialize_chatbot(cookie_file=saved_account)
-    else:
-        # fallback to email/password login if no cookie file exists/cookie file is invalid
-        email = input("Enter your email: ").strip()
-        password = input("Enter your password: ").strip()
-        chatbot = initialize_chatbot(email=email, password=password)
+    # Initialize chatbot using the helper function
+    chatbot = initialize_chatbot(cookie_dir='cookies')
+
+    if chatbot is None:
+        print("Failed to initialize chatbot. Exiting...")
+        return
+
     start_game(chatbot)
+
 
 if __name__ == "__main__":
     main()
