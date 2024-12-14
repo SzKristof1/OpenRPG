@@ -50,6 +50,8 @@ If you have already logged in once with email and password, your session tokens 
 If the login is successful, the program will ask for your in-game character's name and the place where you want to start the game. The chatbot will then give you options to choose from on how do you want to continue the game. You can have other options as well, just write that to the chatbot and press enter. It will work the same way as if you use any of the options given by the chatbot.
 
 If you face any issues, feel free to open an issue [here](https://github.com/SzKristof1/openrpg/issues).
+
+If the assistant doesn't know what it should do (it asks what game are you talking about) go to HuggingChat's web UI [here](https://hf.co/chat) and set the [assistant](https://hf.co/chat/assistant/6741ea05b96dc97d6d15b237) as your default assistant. I haven't found a better solution yet, this should work.
 ## 3. Forks and license
 
 Forks of this game are welcome, by crediting me in an appropriate way. This game is licensed under CC BY-NC-SA. You can view the license here:
