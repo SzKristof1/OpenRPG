@@ -39,7 +39,18 @@ However, if you want a smoother experience, right-click in the game folder and c
 
 I will probably release an installer version soon, so stay tuned.
 
-## 2. Forks and license
+## 2. Usage
+Once you have the game (main.py or main.exe) in a folder, run it using the instructions in step [1.3.](#13-run-the-game-using-the-exe-file)
+
+You will be greeted by an email-password login screen. You have to log in with your HuggingFace account. If you don't have one, create one [here](https://huggingface.co/join).
+Your email and password is only saved on your machine in a cookie file. The cookie file contains two session tokens, and can be found in the cookies subdirectory.
+
+If you have already logged in once with email and password, your session tokens are saved in a cookie file in the cookies subdirectory. If that is the case, the program will automatically detect it, and give you the option to choose between different cookie files and email-password login.
+
+If the login is successful, the program will ask for your in-game character's name and the place where you want to start the game. The chatbot will then give you options to choose from on how do you want to continue the game. You can have other options as well, just write that to the chatbot and press enter. It will work the same way as if you use any of the options given by the chatbot.
+
+If you face any issues, feel free to open an issue [here](https://github.com/SzKristof1/openrpg/issues).
+## 3. Forks and license
 
 Forks of this game are welcome, by crediting me in an appropriate way. This game is licensed under CC BY-NC-SA. You can view the license here:
 ~~~
